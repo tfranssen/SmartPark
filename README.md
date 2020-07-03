@@ -15,7 +15,7 @@ I use Buster Server kernel 5.4
 Write image to SD card using Balena Etcher
 
 ## Step 3: Boot PI and innitial config
-Boot RockPI, find IP address on your router or by using NMAP `nmap 192.168.178.0/24`  
+Boot RockPI, find IP address on your router or by using NMAP `nmap -T4 -F 192.168.178.0/24`  
 Change Root password  
 Make new user
 
