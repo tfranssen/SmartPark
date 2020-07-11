@@ -104,6 +104,9 @@ iptables -t nat -A POSTROUTING -o wlxaca2136650d6 -j MASQUERADE
 iptables -A FORWARD -i wlxaca2136650d6 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i wlan0 -o wlxaca2136650d6 -j ACCEPT
 
+apt-get install iptables-persistent -y 
+
+iptables-save > /etc/iptables/rules.v4
 
 #####Chirpstack installeren#####
 apt install mosquitto mosquitto-clients redis-server redis-tools postgresql -y
