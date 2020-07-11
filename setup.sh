@@ -8,18 +8,18 @@ apt-get upgrade -y && sudo apt-get install hostapd ntp dnsmasq build-essential g
 systemctl stop NetworkManager && systemctl disable NetworkManager
 
 ##### Write network settings #####
-cat interfaces.conf > /etc/network/interfaces 
+cat config/interfaces.conf > /etc/network/interfaces 
 
 ##### Write Wifi (WPA) settings #####
-cat wifisettings.conf > /etc/wpa_supplicant/wpa_supplicant.conf 
+cat config/wifisettings.conf > /etc/wpa_supplicant/wpa_supplicant.conf 
 
 ##### Configure hostapd (Accespoint) #####
 echo "DAEMON_CONF=\"/etc/hostapd/hostapd.conf\""  >> /etc/default/hostapd
-cat hostapd.conf > /etc/hostapd/hostapd.conf
+cat config/hostapd.conf > /etc/hostapd/hostapd.conf
 
 ##### Configure DNSMasq #####
 mv /etc/dnsmasq.conf  /etc/dnsmasq.conf.bak
-cat dnsmasq.conf > /etc/dnsmasq.conf 
+cat config/dnsmasq.conf > /etc/dnsmasq.conf 
 
 systemctl start hostapd && systemctl enable hostapd
 systemctl start dnsmasq && systemctl enable dnsmasq
@@ -63,13 +63,13 @@ systemctl start chirpstack-gateway-bridge && systemctl enable chirpstack-gateway
 ##### Install Chripstack network server #####
 apt install chirpstack-network-server
 
-cat chripstack-network-server.toml > /etc/chirpstack-network-server/chirpstack-network-server.toml 
+cat config/chripstack-network-server.toml > /etc/chirpstack-network-server/chirpstack-network-server.toml 
 
 systemctl start chirpstack-network-server && systemctl enable chirpstack-network-server
 
 ##### Install Chripstack application server #####
 apt install chirpstack-application-server
-cat chirpstack-application-server.toml > /etc/chirpstack-application-server/chirpstack-application-server.toml
+cat config/chirpstack-application-server.toml > /etc/chirpstack-application-server/chirpstack-application-server.toml
 systemctl start chirpstack-application-server && systemctl enable chirpstack-application-server
 
 ##### Install InfluxDB and create DB#####
