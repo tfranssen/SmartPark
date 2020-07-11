@@ -188,10 +188,19 @@ EOF
 systemctl start chirpstack-application-server
 systemctl enable chirpstack-application-server
 #journalctl -f -n 100 -u chirpstack-application-server
+##### Install InfluxDB and create DB#####
+wget -qO- https://repos.influxdata.com/influxdb.key | apt-key add -
+echo "deb https://repos.influxdata.com/debian buster stable" | tee /etc/apt/sources.list.d/influxdb.list
+apt update && apt install influxdb -y
+systemctl unmask influxdb
+systemctl start influxdb && systemctl enable influxdb
 
+echo "CREATE DATABASE SmartParks" | influx
+
+##### Install Node-red #####
 bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered)
 systemctl start nodered.service
 
 systemctl enable nodered.service
 
-echo "Script done! sudo reboot to finish setup. Connect to WiFi Smartparks, PI IP = 10.0.0.1"
+echo "Script done! reboot to finish setup. Connect to WiFi Smartparks, PI IP = 10.0.0.1"
