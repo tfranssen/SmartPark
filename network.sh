@@ -1,3 +1,4 @@
+apt-get upgrade -y && sudo apt-get install hostapd ntp dnsmasq build-essential git iptables-persistent -y
 
 #####Stop and disable networkmanager for stability #####
 systemctl stop NetworkManager && systemctl disable NetworkManager
