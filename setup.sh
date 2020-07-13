@@ -2,7 +2,7 @@
 
 ##### Update and install packages #####
 apt-get update
-apt-get upgrade -y && sudo apt-get install hostapd ntp dnsmasq build-essential git -y
+apt-get upgrade -y && sudo apt-get install hostapd ntp dnsmasq build-essential git iptables-persistent -y
 
 #####Stop and disable networkmanager for stability #####
 systemctl stop NetworkManager && systemctl disable NetworkManager
@@ -36,7 +36,6 @@ iptables -A FORWARD -i wlxaca2136650d6 -o wlan0 -m state --state RELATED,ESTABLI
 iptables -A FORWARD -i wlan0 -o wlxaca2136650d6 -j ACCEPT
 
 ##### Make persistant after reboot #####
-apt-get install iptables-persistent -y 
 iptables-save > /etc/iptables/rules.v4
 
 ##### Install Chripstack dependencies #####
