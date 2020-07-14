@@ -164,7 +164,9 @@ apt update && apt install influxdb -y
 systemctl unmask influxdb
 systemctl start influxdb && systemctl enable influxdb
 
+echo "CREATE USER nodered WITH PASSWORD 'nodered' WITH ALL PRIVILEGES" | influx
 echo "CREATE DATABASE SmartParks" | influx
+
 
 bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered)
 systemctl start nodered.service
