@@ -1,9 +1,33 @@
 # SmartPark
 
-Setup script for Installing clean SmartParks stack on RockPi 4
+Setup script for Installing clean SmartParks stack on RockPi 4.
+
+Hardware:
+ * RockPI 4b
+ * sD card 64 GB
+ * Kingston A2000 250GB NVMe SSD
+ * LB Link Wifi dongle
+ * Lorix Wifx gateway 4db antenna
+
+Configures:
+ * Pi as accespoint over built-in wireless interface (with DHCP)
+ * Uses External wireless interfaces for internet connection
+ * Ethernet wired interface as 192.168.1.1 for communication with Lorix gateway
+ 
+Software:
+ * Hostapd
+ * NTP
+ * DNSMASQ
+ * Mosquitto
+ * Redis
+ * Postgresql
+ * Chirpstack gateway bridge
+ * Chirpstack network server
+ * Chirpstack application server
+ * InfluxDB 
+ * Node-red
 
 ## To do:
-* InfluxDB
 * Configure Chripstack using API calls
 * Configure Node-red
 
