@@ -77,4 +77,6 @@ Install packages (manage palette):
 * wordlmap
 * node-red-dashboard
 
+Import flows:
+https://flows.nodered.org/collection/t-mAbk3CoowS
 
