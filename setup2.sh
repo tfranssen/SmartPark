@@ -1,6 +1,6 @@
 #!/bin/bash
 apt-get update
-apt-get upgrade -y && sudo apt-get install hostapd ntp dnsmasq build-essential git -y
+apt-get upgrade -y && sudo apt-get install hostapd dnsmasq build-essential git -y
 
 systemctl stop NetworkManager && systemctl disable NetworkManager
 
