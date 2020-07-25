@@ -71,3 +71,10 @@ Set Base-URL in Variables (Right click on Collection, Variables, Base-URL, paste
 Click on Run Colletion and click Run  (Collection runner opens)  
 Click Run SmartParks  
 
+## Configure Node-red
+Install packages (manage palette):
+* influxdb
+* wordlmap
+* node-red-dashboard
+
+
