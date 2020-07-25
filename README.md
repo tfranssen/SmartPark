@@ -82,6 +82,7 @@ Import flows:
 https://flows.nodered.org/collection/t-mAbk3CoowS
 
 Check application ID
+Check Mqtt node (default port 1883)
 Add influxdb connection node (default `username: nodered password: nodered`)
 
 
