@@ -80,5 +80,8 @@ Install packages (manage palette):
 Import flows:
 https://flows.nodered.org/collection/t-mAbk3CoowS
 
+Check application ID
+Add influxdb connection node (default `username: nodered password: nodered`)
+
 
 
