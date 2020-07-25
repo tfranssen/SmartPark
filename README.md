@@ -62,12 +62,12 @@ Lora Application server `10.0.0.1:8080`
 Node-red `10.0.0.1:1880`
 
 ## Configure Chripstack using Postman
-Import collection from `https://www.getpostman.com/collections/c84e5a7326cb25e768aa` 
-Log in in Chirpstack `Username: admin password:admin` 
-Change password 
-Create API key in Chirpstack and copy to clipboard 
-Copy key in Collection Authorization tab (Right click on Collection, Authoriztion, Bearer token, paste key) 
-Set Base-URL in Variables (Right click on Collection, Variables, Base-URL, paste ip @ current value) 
-Click on Run Colletion and click Run  (Collection runner opens) 
-Click Run SmartParks 
+Import collection from `https://www.getpostman.com/collections/c84e5a7326cb25e768aa`  
+Log in in Chirpstack `Username: admin password:admin`  
+Change password  
+Create API key in Chirpstack and copy to clipboard  
+Copy key in Collection Authorization tab (Right click on Collection, Authoriztion, Bearer token, paste key)  
+Set Base-URL in Variables (Right click on Collection, Variables, Base-URL, paste ip @ current value)  
+Click on Run Colletion and click Run  (Collection runner opens)  
+Click Run SmartParks  
 
