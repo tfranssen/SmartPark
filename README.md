@@ -76,6 +76,7 @@ Install packages (manage palette):
 * influxdb
 * wordlmap
 * node-red-dashboard
+* ui_table
 
 Import flows:
 https://flows.nodered.org/collection/t-mAbk3CoowS
