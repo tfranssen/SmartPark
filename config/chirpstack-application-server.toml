@@ -1,6 +1,6 @@
 [general]
 log_level=4
 [postgresql]
-dsn="postgres://chirpstack_as:dbpassword@localhost/chirpstack_as?sslmode=disable"
+dsn="postgres://<<user>>:<<pass>>@localhost/chirpstack_as?sslmode=disable"
   [application_server.external_api]
-  jwt_secret="JTopwCWDI9BjEZO5VgCfxm2rjKpNUUjD0RkeSy9/DTs="
+  jwt_secret="<<generated>>"
