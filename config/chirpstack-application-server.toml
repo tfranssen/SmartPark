@@ -1,6 +1,332 @@
+# Add postgresqldb password and JWT token
 [general]
+# Log level
+#
+# debug=5, info=4, warning=3, error=2, fatal=1, panic=0
 log_level=4
+
+# Log to syslog.
+#
+# When set to true, log messages are being written to syslog.
+log_to_syslog=false
+
+# The number of times passwords must be hashed. A higher number is safer as
+# an attack takes more time to perform.
+password_hash_iterations=100000
+
+# This configuration sets the required settings and configures an integration
+# with a MQTT broker. Many options and defaults have been omitted for
+# simplicity.
+#
+# See https://www.chirpstack.io/application-server/install/config/ for a full
+# configuration example and documentation.
+
+
+# PostgreSQL settings.
+#
+# Please note that PostgreSQL 9.5+ is required.
 [postgresql]
-dsn="postgres://<<user>>:<<pass>>@localhost/chirpstack_as?sslmode=disable"
-  [application_server.external_api]
-  jwt_secret="<<generated>>"
+# PostgreSQL dsn (e.g.: postgres://user:password@hostname/database?sslmode=disable).
+#
+# Besides using an URL (e.g. 'postgres://user:password@hostname/database?sslmode=disable')
+# it is also possible to use the following format:
+# 'user=chirpstack_as dbname=chirpstack_as sslmode=disable'.
+#
+# The following connection parameters are supported:
+#
+# * dbname - The name of the database to connect to
+# * user - The user to sign in as
+# * password - The user's password
+# * host - The host to connect to. Values that start with / are for unix domain sockets. (default is localhost)
+# * port - The port to bind to. (default is 5432)
+# * sslmode - Whether or not to use SSL (default is require, this is not the default for libpq)
+# * fallback_application_name - An application_name to fall back to if one isn't provided.
+# * connect_timeout - Maximum wait for connection, in seconds. Zero or not specified means wait indefinitely.
+# * sslcert - Cert file location. The file must contain PEM encoded data.
+# * sslkey - Key file location. The file must contain PEM encoded data.
+# * sslrootcert - The location of the root certificate file. The file must contain PEM encoded data.
+#
+# Valid values for sslmode are:
+#
+# * disable - No SSL
+# * require - Always SSL (skip verification)
+# * verify-ca - Always SSL (verify that the certificate presented by the server was signed by a trusted CA)
+# * verify-full - Always SSL (verify that the certification presented by the server was signed by a trusted CA and the server host name matches the one in the certificate)
+#dsn="postgres://localhost/chirpstack_as?sslmode=disable"
+dsn="host=localhost dbname=chirpstack_as user=chirpstack_as password= sslmode=disable"
+
+# Automatically apply database migrations.
+#
+# It is possible to apply the database-migrations by hand
+# (see https://github.com/brocaar/chirpstack-application-server/tree/master/migrations)
+# or let ChirpStack Application Server migrate to the latest state automatically, by using
+# this setting. Make sure that you always make a backup when upgrading Lora
+# App Server and / or applying migrations.
+automigrate=true
+
+# Max open connections.
+#
+# This sets the max. number of open connections that are allowed in the
+# PostgreSQL connection pool (0 = unlimited).
+max_open_connections=0
+
+# Max idle connections.
+#
+# This sets the max. number of idle connections in the PostgreSQL connection
+# pool (0 = no idle connections are retained).
+max_idle_connections=2
+
+# Redis settings
+#
+# Please note that Redis 2.6.0+ is required.
+[redis]
+# Redis url (e.g. redis://user:password@hostname/0)
+#
+# For more information about the Redis URL format, see:
+# https://www.iana.org/assignments/uri-schemes/prov/redis
+url="redis://localhost:6379"
+
+# Redis Cluster.
+#
+# Set this to true when the provided URL is pointing to a Redis Cluster
+# instance.
+cluster=false
+
+# The master name.
+#
+# Set the master name when the provided URL is pointing to a Redis Sentinel
+# instance.
+# master_name=""
+
+# Connection pool size.
+#
+# Default is 10 connections per every CPU.
+# pool_size=0
+
+
+# Application-server settings.
+[application_server]
+
+# Application-server identifier.
+#
+# Random UUID defining the id of the application-server installation (used by
+# ChirpStack Network Server as routing-profile id).
+# For now it is recommended to not change this id.
+id="6d5db27e-4ce2-4b2b-b5d7-91f069397978"
+
+  # JavaScript codec settings.
+  [application_server.codec.js]
+  # Maximum execution time.
+  max_execution_time="100ms"
+
+  # Integration configures the data integration.
+  #
+  # This is the data integration which is available for all applications,
+  # besides the extra integrations that can be added on a per-application
+  # basis.
+  [application_server.integration]
+
+  # Payload marshaler.
+  #
+  # This defines how the MQTT payloads are encoded. Valid options are:
+  # * protobuf:  Protobuf encoding
+  # * json:      JSON encoding (easier for debugging, but less compact than 'protobuf')
+  # * json_v3:   v3 JSON (will be removed in the next major release)
+  marshaler="json"
+
+  # Enabled integrations.
+  enabled=["mqtt"]
+
+    # MQTT integration backend.
+    [application_server.integration.mqtt]
+    # MQTT topic templates for the different MQTT topics.
+    #
+    # The meaning of these topics are documented at:
+    # https://www.chirpstack.io/application-server/integrate/data/
+    #
+    # The following substitutions can be used:
+    # * "{{ .ApplicationID }}" for the application id.
+    # * "{{ .DevEUI }}" for the DevEUI of the device.
+    #
+    # Note: the downlink_topic_template must contain both the application id and
+    # DevEUI substitution!
+    uplink_topic_template="application/{{ .ApplicationID }}/device/{{ .DevEUI }}/rx"
+    downlink_topic_template="application/{{ .ApplicationID }}/device/{{ .DevEUI }}/tx"
+    join_topic_template="application/{{ .ApplicationID }}/device/{{ .DevEUI }}/join"
+    ack_topic_template="application/{{ .ApplicationID }}/device/{{ .DevEUI }}/ack"
+    error_topic_template="application/{{ .ApplicationID }}/device/{{ .DevEUI }}/error"
+    status_topic_template="application/{{ .ApplicationID }}/device/{{ .DevEUI }}/status"
+    location_topic_template="application/{{ .ApplicationID }}/device/{{ .DevEUI }}/location"
+
+    # Retained messages configuration.
+    #
+    # The MQTT broker will store the last publised message, when retained message is set
+    # to true. When a client subscribes to a topic with retained message set to true, it will
+    # always receive the last published message.
+    uplink_retained_message=false
+    join_retained_message=false
+    ack_retained_message=false
+    error_retained_message=false
+    status_retained_message=false
+    location_retained_message=false
+
+    # MQTT server (e.g. scheme://host:port where scheme is tcp, ssl or ws)
+    server="tcp://localhost:1883"
+
+    # Connect with the given username (optional)
+    username="spadmin"
+
+    # Connect with the given password (optional)
+    password=""
+
+    # Maximum interval that will be waited between reconnection attempts when connection is lost.
+    # Valid units are 'ms', 's', 'm', 'h'. Note that these values can be combined, e.g. '24h30m15s'.
+    max_reconnect_interval="1m0s"
+
+    # Quality of service level
+    #
+    # 0: at most once
+    # 1: at least once
+    # 2: exactly once
+    #
+    # Note: an increase of this value will decrease the performance.
+    # For more information: https://www.hivemq.com/blog/mqtt-essentials-part-6-mqtt-quality-of-service-levels
+    qos=1
+
+    # Clean session
+    #
+    # Set the "clean session" flag in the connect message when this client
+    # connects to an MQTT broker. By setting this flag you are indicating
+    # that no messages saved by the broker for this client should be delivered.
+    clean_session=false
+
+    # Client ID
+    #
+    # Set the client id to be used by this client when connecting to the MQTT
+    # broker. A client id must be no longer than 23 characters. When left blank,
+    # a random id will be generated. This requires clean_session=true.
+    client_id="chirpstack-application-server"
+
+    # Settings for the "internal api"
+    #
+    # This is the API used by ChirpStack Network Server to communicate with ChirpStack Application Server
+    # and should not be exposed to the end-user.
+    [application_server.api]
+    # ip:port to bind the api server
+    bind="0.0.0.0:8001"
+
+    # Public ip:port of the application-server API.
+    #
+    # This is used by ChirpStack Network Server to connect to ChirpStack Application Server. When running
+    # ChirpStack Application Server on a different host than ChirpStack Network Server, make sure to set
+    # this to the host:ip on which ChirpStack Network Server can reach ChirpStack Application Server.
+    # The port must be equal to the port configured by the 'bind' flag
+    # above.
+    public_host="localhost:8001"
+
+
+    # Settings for the "external api"
+    #
+    # This is the API and web-interface exposed to the end-user.
+    [application_server.external_api]
+    # ip:port to bind the (user facing) http server to (web-interface and REST / gRPC api)
+    bind="0.0.0.0:8080"
+
+    # http server TLS certificate (optional)
+    tls_cert=""
+
+    # http server TLS key (optional)
+    tls_key=""
+
+    # JWT secret used for api authentication / authorization
+    # You could generate this by executing 'openssl rand -base64 32' for example
+    jwt_secret=""
+
+
+# Join-server configuration.
+#
+# ChirpStack Application Server implements a (subset) of the join-api specified by the
+# LoRaWAN Backend Interfaces specification. This API is used by ChirpStack Network Server
+# to handle join-requests.
+[join_server]
+# ip:port to bind the join-server api interface to
+bind="0.0.0.0:8003"
+
+
+# Metrics collection settings.
+[metrics]
+# Timezone
+#
+# The timezone is used for correctly aggregating the metrics (e.g. per hour,
+# day or month).
+# Example: "Europe/Amsterdam" or "Local" for the the system's local time zone.
+timezone="Local"
+
+  # Metrics stored in Redis.
+  #
+  # The following metrics are stored in Redis:
+  # * gateway statistics
+  [metrics.redis]
+  # Aggregation intervals
+  #
+  # The intervals on which to aggregate. Available options are:
+  # 'MINUTE', 'HOUR', 'DAY', 'MONTH'.
+  aggregation_intervals=["MINUTE", "HOUR", "DAY", "MONTH"]
+
+  # Aggregated statistics storage duration.
+  minute_aggregation_ttl="2h0m0s"
+  hour_aggregation_ttl="48h0m0s"
+  day_aggregation_ttl="2160h0m0s"
+  month_aggregation_ttl="17520h0m0s"
+
+
+  # Metrics stored in Prometheus.
+  #
+  # These metrics expose information about the state of the ChirpStack Network Server
+  # instance.
+  [metrics.prometheus]
+  # Enable Prometheus metrics endpoint.
+  endpoint_enabled=false
+
+  # The ip:port to bind the Prometheus metrics server to for serving the
+  # metrics endpoint.
+  bind=""
+
+  # API timing histogram.
+  #
+  # By setting this to true, the API request timing histogram will be enabled.
+  # See also: https://github.com/grpc-ecosystem/go-grpc-prometheus#histograms
+  api_timing_histogram=false
+
+
+  # Monitoring settings.
+  #
+  # Note that this replaces the metrics.prometheus configuration. If a
+  # metrics.prometheus if found in the configuration then it will fall back
+  # to that and the monitoring section is ignored.
+  [monitoring]
+
+  # IP:port to bind the monitoring endpoint to.
+  #
+  # When left blank, the monitoring endpoint will be disabled.
+  bind=""
+
+  # Prometheus metrics endpoint.
+  #
+  # When set to true, Prometheus metrics will be served at '/metrics'.
+  prometheus_endpoint=false
+
+  # Prometheus API timing histogram.
+  #
+  # By setting this to true, the API request timing histogram will be enabled.
+  # See also: https://github.com/grpc-ecosystem/go-grpc-prometheus#histograms
+  prometheus_api_timing_histogram=false
+
+  # Health check endpoint.
+  #
+  # When set to true, the healthcheck endpoint will be served at '/health'.
+  # When requesting, this endpoint will perform the following actions to
+  # determine the health of this service:
+  #   * Ping PostgreSQL database
+  #   * Ping Redis database
+  healthcheck_endpoint=false
