@@ -17,7 +17,7 @@ function get_num(x, min, max, precision, round) {
   return Math.round(back_x * Math.pow(10, round)) / Math.pow(10, round);
 }
 
-function Decode(fPort, bytes){
+function Decoder(bytes) {
 
   var decoded = {};
   var cnt = 0;
@@ -33,7 +33,7 @@ function Decode(fPort, bytes){
 
 
   // settings
-  if (fPort === 3) {
+  if (port === 3) {
     decoded.system_status_interval = (bytes[1] << 8) | bytes[0];
     decoded.system_functions = {};//bytes[2];
     decoded.system_functions.gps_periodic = ((bytes[2] >> 0) & 0x01) ? 1 : 0;
@@ -71,8 +71,13 @@ function Decode(fPort, bytes){
     decoded.system_charge_min = bytes[22]*10+2500;
     decoded.system_charge_max = bytes[23]*10+2500;
     decoded.system_input_charge_min = (bytes[25] << 8) | bytes[24];
+    decoded.pulse_threshold = bytes[26];
+    decoded.pulse_on_timeout = bytes[27];
+    decoded.pulse_min_interval = (bytes[29] << 8) | bytes[28];
+    decoded.gps_accel_z_threshold = (bytes[31] << 8) | bytes[30];
+    decoded.fw_version = (bytes[33] << 8) | bytes[32];
   }
-  else if (fPort === 12) {
+  else if (port === 12) {
     decoded.resetCause = resetCause_dict[bytes[0]&0x07];
     decoded.system_state_timeout = bytes[0]>>3;
     decoded.battery = bytes[1]*10+2500; // result in mV
@@ -97,9 +102,15 @@ function Decode(fPort, bytes){
     decoded.accely = get_num(bytes[12], -2000, 2000, 8, 1);
     decoded.accelz = get_num(bytes[13], -2000, 2000, 8, 1);
     decoded.battery_low = (bytes[15] << 8) | bytes[14];; // result in mV
-    decoded.gps_on_time_total = (bytes[17] << 8) | bytes[16]; // result in mV
+    decoded.gps_on_time_total = (bytes[17] << 8) | bytes[16];
+    decoded.gps_time = bytes[18] | (bytes[19] << 8) | (bytes[20] << 16) | (bytes[21] << 24);
+    var d= new Date(decoded.gps_time*1000);
+    decoded.gps_time_decoded = d.toLocaleString();
+    decoded.pulse_counter = bytes[22];
+    decoded.pulse_energy = bytes[23];
+    decoded.pulse_voltage = (bytes[25] << 8) | bytes[24];
   }
-  else if (fPort === 1) {
+  else if (port === 1) {
     decoded.lat = ((bytes[cnt++] << 16) >>> 0) + ((bytes[cnt++] << 8) >>> 0) + bytes[cnt++];
     decoded.lon = ((bytes[cnt++] << 16) >>> 0) + ((bytes[cnt++] << 8) >>> 0) + bytes[cnt++];
     if(decoded.lat!==0 && decoded.lon!==0){
@@ -120,7 +131,7 @@ function Decode(fPort, bytes){
     var d= new Date(decoded.time*1000);
     decoded.time_decoded = d.toLocaleString();
   }
-  else if (fPort === 11) {
+  else if (port === 11) {
     var locations=[];
     for(i = 0; i < 5; i++){
       var location={}
@@ -138,6 +149,14 @@ function Decode(fPort, bytes){
       locations.push(location);
     }
     decoded.locations=JSON.stringify(locations);
+  }
+  else if (port === 30) {
+    var vswr=[];
+    for(i = 0; i < bytes.length; i++){
+      var value=(bytes[i]);
+      vswr.push(value);
+    }
+    decoded.vswr=vswr;
   }
 
   return decoded;
