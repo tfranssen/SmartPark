@@ -49,5 +49,9 @@ data['pulse_min_interval'] =1
 data['gps_accel_z_threshold'] =0
 
 
-json_data = json.dumps(data)
+
+json_data = json.dumps(data, sort_keys=True,  indent=4)
+DataFile = open("settings.json", "w")
+DataFile.write(json.dumps(data, indent=4, sort_keys=True))
+DataFile.close()
 print(json_data)
