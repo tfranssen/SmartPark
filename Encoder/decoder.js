@@ -16,8 +16,7 @@ function get_num(x, min, max, precision, round) {
     }
     return Math.round(back_x * Math.pow(10, round)) / Math.pow(10, round);
   }
-  var port = 12;
-  function Decoder(bytes) {
+  function Decoder(bytes, port) {
   
     var decoded = {};
     var cnt = 0;
@@ -158,10 +157,13 @@ function get_num(x, min, max, precision, round) {
       }
       decoded.vswr=vswr;
     }
-  
-    return decoded;
-  }
-var dataBase64 = "AmqHIAAAAAAAAAB9QYAFAAAAAAAAAAAAAAA="
+    return JSON.stringify(decoded);
 
-console.log(Buffer.from(dataBase64, 'base64').toString('hex'));
-console.log(Decoder(Buffer.from(dataBase64, 'base64').toString('hex')));
+  }
+
+function Base64strToHexBuffer(base64str) {
+  var dataString = Buffer.from(base64str, 'base64').toString('hex');
+  var dataHexBuffer = Buffer.from(dataString, 'hex');
+  return dataHexBuffer
+}
+console.log(Decoder(Base64strToHexBuffer("AmqHIAAAAAAAAAB9QYAFAAAAAAAAAAAAAAA="),12));

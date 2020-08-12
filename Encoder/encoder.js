@@ -1,7 +1,7 @@
-function Encode(object, fport) {
+function Encode(object, port) {
     var bytes = [];
     //settings
-    if (fport === 3){
+    if (port === 3){
         bytes[0] = (object.system_status_interval) & 0xFF;
         bytes[1] = (object.system_status_interval)>>8 & 0xFF;
 
@@ -51,8 +51,19 @@ function Encode(object, fport) {
         bytes[23] = ((object.system_charge_max-2500)/10) & 0xFF;
         bytes[24] = (object.system_input_charge_min) & 0xFF;
         bytes[25] = (object.system_input_charge_min)>>8 & 0xFF;
+        bytes[26] = (object.pulse_threshold)& 0xFF;
+        bytes[27] = (object.pulse_on_timeout)& 0xFF
+
+        bytes[28] = (object.pulse_min_interval) & 0xFF;
+        bytes[29] = (object.pulse_min_interval)>>8 & 0xFF;
+
+        bytes[30] = (object.gps_accel_z_threshold+2000) & 0xFF;
+        bytes[31] = (object.gps_accel_z_threshold+2000)>>8 & 0xFF;
+
+        bytes[32] = 0;
+        bytes[33] = 0;
     }
-    else if (fport === 30){
+    else if (port === 30){
         bytes[0] = (object.freq_start) & 0xFF;
         bytes[1] = (object.freq_start)>>8 & 0xFF;
         bytes[2] = (object.freq_start)>>16 & 0xFF;
@@ -78,7 +89,7 @@ function Encode(object, fport) {
         bytes[17] = (object.type)>>8 & 0xFF;
     }
     //command
-    else if (fport === 99){
+    else if (port === 99){
         if(object.command.reset){
             bytes[0]=0xab;
         }
@@ -90,29 +101,19 @@ function Encode(object, fport) {
         }
     }
     return bytes;
-  } 
-var encoded =  Encode({"system_status_interval": 5, "system_functions": {"accelerometer_enabled": false, "light_enabled": false, "temperature_enabled": false, "humidity_enabled": false, "charging_enabled": true}, "lorawan_datarate_adr": {"datarate": 5, "confirmed_uplink": false, "adr": false}, "gps_periodic_interval": 1, "gps_triggered_interval": 0, "gps_triggered_threshold": 10, "gps_triggered_duration": 10, "gps_cold_fix_timeout": 200, "gps_hot_fix_timeout": 60, "gps_min_fix_time": 1, "gps_min_ehpe": 50, "gps_hot_fix_retry": 5, "gps_cold_fix_retry": 20, "gps_fail_retry": 0, "gps_settings": {"d3_fix": true, "fail_backoff": false, "hot_fix": true, "fully_resolved": false}, "system_voltage_interval": 1, "gps_charge_min": 2500, "system_charge_min": 3450, "system_charge_max": 4000, "system_input_charge_min": 10000, "pulse_threshold": 3, "pulse_on_timeout": 60, "pulse_min_interval": 1, "gps_accel_z_threshold": 0},3)
-console.log(encoded)
-var encoded64 = "";
+  }
+let settingsfile = require('./settings.json');
+var encoded =  Encode(settingsfile,3)
+console.log(encoded);
+console.log(encoded.toString(16));
+function toHex(d) {
+    return  ("0"+(Number(d).toString(16))).slice(-2).toUpperCase()
+}
+var opt = [];
 for(let i = 0; i < encoded.length; i++){
     let row = encoded[i]; 
-    row = row.toString()
-    let opt = {};
-    opt = Buffer.from(row).toString('base64');
-    encoded64 = encoded64 + opt;  
+    opt.push(toHex(row));
 }
-var encodedhex = "";
-for(let i = 0; i < encoded.length; i++){
-    let row = encoded[i];
-    let opt = {};
-    opt = row.toString(16);
-    encodedhex = encodedhex + opt + ',';  
-}
-console.log("Encoder output:");
-console.log(encoded.toString());
-console.log("Encoder output converted to base64 individual:");
-console.log(encoded64);
-console.log("Encoder output converted to hex individual:");
-console.log(encodedhex);
-console.log("Encoder output converted to base64 as string:")
-console.log(Buffer.from(encoded.toString()).toString('base64'));
+console.log(opt);
+
+
