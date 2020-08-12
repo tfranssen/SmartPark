@@ -157,13 +157,14 @@ function get_num(x, min, max, precision, round) {
       }
       decoded.vswr=vswr;
     }
-    return JSON.stringify(decoded);
+    return JSON.stringify(decoded,null,4);
 
   }
 
 function Base64strToHexBuffer(base64str) {
   var dataString = Buffer.from(base64str, 'base64').toString('hex');
   var dataHexBuffer = Buffer.from(dataString, 'hex');
+  console.log(dataHexBuffer)
   return dataHexBuffer
 }
 console.log(Decoder(Base64strToHexBuffer("AmqHIAAAAAAAAAB9QYAFAAAAAAAAAAAAAAA="),12));
