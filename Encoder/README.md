@@ -11,8 +11,10 @@
 * Run `node encoder.js`. Output is printed in terminal in Hex and Base64
 
 ### For decoding
-* Paste Base64 using `console.log(Decoder(Base64strToHexBuffer(<PayloadBase64>),12));`
-* Paste Hex using `console.log(Decoder(<PayloadHex>));`
+* In `decoder.js`:
+  * Paste Base64 using `console.log(Decoder(Base64strToHexBuffer(<PayloadBase64>),12));` on line `170`
+  * Paste Hex using `console.log(Decoder(<PayloadHex>));` on line `170`
+* Run `node decoder.js`
 * Output is printed to console
 
 
