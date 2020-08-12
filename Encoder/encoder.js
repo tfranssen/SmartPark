@@ -104,16 +104,20 @@ function Encode(object, port) {
   }
 let settingsfile = require('./settings.json');
 var encoded =  Encode(settingsfile,3)
+console.log(settingsfile)
+console.log("Decimal array:");
 console.log(encoded);
-console.log(encoded.toString(16));
 function toHex(d) {
     return  ("0"+(Number(d).toString(16))).slice(-2).toUpperCase()
 }
-var opt = [];
+var hexString = [];
 for(let i = 0; i < encoded.length; i++){
     let row = encoded[i]; 
-    opt.push(toHex(row));
+    hexString.push(toHex(row));
 }
-console.log(opt);
-
+console.log("Hex array:");
+console.log(hexString);
+var dataString = Buffer.from(hexString, 'hex').toString('base64');
+console.log("Base64 string:");
+console.log(dataString);
 
