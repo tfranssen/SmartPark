@@ -36,6 +36,6 @@
         "temperature_enabled": false
     }, 
     "system_input_charge_min": 10000, 
-    "system_status_interval": 5, 
+    "system_status_interval": 2, 
     "system_voltage_interval": 1
 }
